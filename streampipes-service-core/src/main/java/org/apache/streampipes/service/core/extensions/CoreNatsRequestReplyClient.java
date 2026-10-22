@@ -18,9 +18,8 @@
 
 package org.apache.streampipes.service.core.extensions;
 
-import org.apache.streampipes.messaging.nats.NatsConnectionLog;
-
 import io.nats.client.Connection;
+import io.nats.client.ConnectionListener;
 import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.Options;
@@ -38,7 +37,6 @@ public class CoreNatsRequestReplyClient {
   private final String natsToken;
   private final Duration timeout;
   private Connection natsConnection;
-  private NatsConnectionLog connectionLog;
 
   public CoreNatsRequestReplyClient(String host, int port, String natsToken, Duration timeout) {
     this.natsUrl = "nats://" + host + ":" + port;
@@ -77,14 +75,10 @@ public class CoreNatsRequestReplyClient {
   }
 
   private Options buildOptions() {
-    if (connectionLog == null) {
-      connectionLog = new NatsConnectionLog("core management");
-    }
     var optionsBuilder = Options.builder()
         .server(natsUrl)
         .maxReconnects(-1)
-        .errorListener(connectionLog)
-        .connectionListener(connectionLog);
+        .connectionListener(this::onConnectionEvent);
 
     if (natsToken != null && !natsToken.isBlank()) {
       optionsBuilder.token(natsToken);
@@ -93,11 +87,16 @@ public class CoreNatsRequestReplyClient {
     return optionsBuilder.build();
   }
 
-  public synchronized void close() {
-    if (connectionLog != null) {
-      connectionLog.stop();
-      connectionLog = null;
+  private void onConnectionEvent(Connection connection, ConnectionListener.Events event) {
+    if (event == ConnectionListener.Events.RECONNECTED || event == ConnectionListener.Events.CONNECTED) {
+      LOG.info("NATS connection event for {}: {}", natsUrl, event);
+    } else if (event == ConnectionListener.Events.DISCONNECTED
+        || event == ConnectionListener.Events.CLOSED) {
+      LOG.warn("NATS connection event for {}: {}", natsUrl, event);
     }
+  }
+
+  public synchronized void close() {
     if (natsConnection != null) {
       try {
         natsConnection.close();

@@ -44,6 +44,7 @@
         <module>streampipes-connectors-opcua</module>
         <module>streampipes-connectors-pulsar</module>
         <module>streampipes-connectors-rocketmq</module>
+        <module>streampipes-connectors-s3</module>
         <module>streampipes-connectors-tubemq</module>
 
         <module>streampipes-extensions-all-iiot</module>

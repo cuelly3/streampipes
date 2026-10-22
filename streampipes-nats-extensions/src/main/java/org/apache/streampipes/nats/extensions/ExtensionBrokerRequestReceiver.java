@@ -33,7 +33,6 @@ import org.apache.streampipes.extensions.management.monitoring.ServiceMonitorMan
 import org.apache.streampipes.extensions.management.pe.DataProcessorPipelineElementManagement;
 import org.apache.streampipes.extensions.management.pe.DataSinkPipelineElementManagement;
 import org.apache.streampipes.extensions.management.pe.DataStreamPipelineElementManagement;
-import org.apache.streampipes.messaging.nats.NatsConnectionLog;
 import org.apache.streampipes.model.extensions.transport.ExtensionServiceBrokerOperations;
 import org.apache.streampipes.model.extensions.transport.ExtensionServiceBrokerRequestEnvelope;
 import org.apache.streampipes.model.extensions.transport.ExtensionServiceBrokerResponseEnvelope;
@@ -84,7 +83,6 @@ public class ExtensionBrokerRequestReceiver {
   private final Map<String, ExtensionBrokerOperationHandler> operationHandlers;
 
   private Connection natsConnection;
-  private NatsConnectionLog connectionLog;
   private Dispatcher dispatcher;
   private String subscriptionBaseTopic;
   private Runnable reconnectHandler;
@@ -155,12 +153,7 @@ public class ExtensionBrokerRequestReceiver {
         props.setProperty(Options.PROP_TOKEN, natsToken);
         optionsBuilder = new Options.Builder(props).server(natsUrl).maxReconnects(-1);
       }
-      connectionLog = new NatsConnectionLog("extension management " + serviceId);
-      var diagnostics = connectionLog;
-      optionsBuilder = optionsBuilder.errorListener(diagnostics).connectionListener((connection, event) -> {
-        diagnostics.connectionEvent(connection, event);
-        onConnectionEvent(connection, event);
-      });
+      optionsBuilder = optionsBuilder.connectionListener(this::onConnectionEvent);
       this.natsConnection = Nats.connect(optionsBuilder.build());
 
       this.subscriptionBaseTopic = ExtensionServiceBrokerTopics.serviceTopic(
@@ -183,6 +176,7 @@ public class ExtensionBrokerRequestReceiver {
 
   private void onConnectionEvent(Connection connection, ConnectionListener.Events event) {
     if (event == ConnectionListener.Events.RECONNECTED) {
+      LOG.info("Extension broker reconnected to NATS");
       if (reconnectHandler != null) {
         try {
           reconnectHandler.run();
@@ -194,9 +188,6 @@ public class ExtensionBrokerRequestReceiver {
   }
 
   public synchronized void stop() {
-    if (connectionLog != null) {
-      connectionLog.stop();
-    }
     if (natsConnection != null && dispatcher != null) {
       natsConnection.closeDispatcher(dispatcher);
       dispatcher = null;

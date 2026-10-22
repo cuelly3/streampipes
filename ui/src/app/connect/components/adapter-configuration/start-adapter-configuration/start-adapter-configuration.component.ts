@@ -153,7 +153,6 @@ export class StartAdapterConfigurationComponent implements OnInit {
     private cachedEventRateRule: ReduceEventRateRule | null;
 
     saveInDataLake = false;
-    dataLakeDatasetName = '';
     dataLakeTimestampField: string;
 
     showCode = false;
@@ -238,7 +237,6 @@ export class StartAdapterConfigurationComponent implements OnInit {
             data: {
                 adapter: this.adapterDescription,
                 saveInDataLake: this.saveInDataLake,
-                dataLakeDatasetName: this.dataLakeDatasetName,
                 dataLakeTimestampField: this.dataLakeTimestampField,
                 editMode: false,
                 startAdapterNow,
