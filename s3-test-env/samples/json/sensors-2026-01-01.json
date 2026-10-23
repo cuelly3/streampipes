@@ -1,0 +1,7 @@
+[
+  { "timestamp": 1767225600000, "sensorId": "sensor-01", "temperature": 21.4, "pressure": 1013.2, "status": "OK" },
+  { "timestamp": 1767225610000, "sensorId": "sensor-01", "temperature": 21.7, "pressure": 1013.0, "status": "OK" },
+  { "timestamp": 1767225620000, "sensorId": "sensor-02", "temperature": 23.9, "pressure": 1012.7, "status": "OK" },
+  { "timestamp": 1767225630000, "sensorId": "sensor-02", "temperature": 24.6, "pressure": 1012.4, "status": "WARN" },
+  { "timestamp": 1767225640000, "sensorId": "sensor-03", "temperature": 19.8, "pressure": 1014.1, "status": "OK" }
+]

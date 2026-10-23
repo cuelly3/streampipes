@@ -1,0 +1,19 @@
+{
+  "identities": [
+    {
+      "name": "streampipes",
+      "credentials": [
+        {
+          "accessKey": "streampipes",
+          "secretKey": "streampipes-secret"
+        }
+      ],
+      "actions": [
+        "Admin",
+        "Read",
+        "List",
+        "Write"
+      ]
+    }
+  ]
+}

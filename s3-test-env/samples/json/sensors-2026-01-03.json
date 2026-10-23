@@ -1,0 +1,5 @@
+[
+  { "ts": "2026-01-03T00:00:00Z", "sensor_id": "sensor-01", "temperatureCelsius": 22.1, "humidity": 48.5, "statusCode": 0 },
+  { "ts": "2026-01-03T00:00:10Z", "sensor_id": "sensor-02", "temperatureCelsius": 24.8, "humidity": 51.2, "statusCode": 1 },
+  { "ts": "2026-01-03T00:00:20Z", "sensor_id": "sensor-04", "temperatureCelsius": 18.3, "humidity": 44.9, "statusCode": 0 }
+]

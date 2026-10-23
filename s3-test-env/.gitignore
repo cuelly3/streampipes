@@ -1,0 +1,3 @@
+# Generated on demand by scripts/generate-large-csv.sh - far too big to commit.
+samples/large/*
+!samples/large/.gitkeep
