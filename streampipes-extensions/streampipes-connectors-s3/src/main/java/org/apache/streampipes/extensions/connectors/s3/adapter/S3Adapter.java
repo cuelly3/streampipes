@@ -92,7 +92,7 @@ public class S3Adapter implements StreamPipesAdapter {
             new CsvParser(),
             new XmlParser()
         )
-        .withAssets(ExtensionAssetType.DOCUMENTATION)
+        .withAssets(ExtensionAssetType.DOCUMENTATION, ExtensionAssetType.ICON)
         .withLocales(Locales.EN)
         .requiredTextParameter(Labels.withId(ENDPOINT_URL))
         .requiredTextParameter(Labels.withId(REGION))
