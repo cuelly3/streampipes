@@ -61,20 +61,13 @@ public class PersistPipelineHandler {
 
   public PipelineOperationStatus createAndStartPersistPipeline(AdapterDescription adapterDescription,
                                                                ExtensionServiceRequestManager requestManager) throws Exception {
-    return createAndStartPersistPipeline(adapterDescription, requestManager, null);
-  }
-
-  public PipelineOperationStatus createAndStartPersistPipeline(AdapterDescription adapterDescription,
-                                                               ExtensionServiceRequestManager requestManager,
-                                                               String persistDatasetName) throws Exception {
     var template = getTemplate();
     if (template != null) {
-      var datasetName = nameOrDefault(persistDatasetName, adapterDescription.getName());
       var compactPipeline = new CompactPipeline(
           String.format("persist-%s", adapterDescription.getName().replaceAll(" ", "-")),
           String.format("Persist %s", adapterDescription.getName()),
           null,
-          makeTemplateConfig(adapterDescription, template.getPipeline(), datasetName),
+          makeTemplateConfig(adapterDescription, template.getPipeline()),
           new CreateOptions(false, true)
       );
       var pipelineGenerationResult = compactPipelineManagement.makePipeline(compactPipeline);
@@ -92,16 +85,11 @@ public class PersistPipelineHandler {
     return this.templateStorage.getElementById(DATASET_TEMPLATE_ID);
   }
 
-  private String nameOrDefault(String name, String defaultName) {
-    return name == null || name.isBlank() ? defaultName : name;
-  }
-
   private List<CompactPipelineElement> makeTemplateConfig(AdapterDescription adapterDescription,
-                                                          List<CompactPipelineElement> pipelineElements,
-                                                          String datasetName) {
+                                                          List<CompactPipelineElement> pipelineElements) {
     pipelineElements.get(0).configuration().addAll(
         List.of(
-            Map.of(DATASET_MEASUREMENT_FIELD, datasetName),
+            Map.of(DATASET_MEASUREMENT_FIELD, adapterDescription.getName()),
             Map.of(DATASET_TIMESTAMP_FIELD, String.format("s0::%s", getTimestampField(adapterDescription))),
             Map.of(DATASET_DIMENSIONS_FIELD, getDimensions(adapterDescription))
         )

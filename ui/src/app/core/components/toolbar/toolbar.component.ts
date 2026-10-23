@@ -42,7 +42,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/divider';
 import { TranslatePipe } from '@ngx-translate/core';
-import { SpSystemNotificationComponent } from '../system-notification/system-notification.component';
 
 @Component({
     selector: 'sp-toolbar',
@@ -63,7 +62,6 @@ import { SpSystemNotificationComponent } from '../system-notification/system-not
         MatDivider,
         MatMenuItem,
         TranslatePipe,
-        SpSystemNotificationComponent,
     ],
 })
 export class ToolbarComponent
@@ -82,10 +80,7 @@ export class ToolbarComponent
     ngOnInit(): void {
         this.assetFilterService.applyAssetLinkType('');
         this.currentUserService.user$.subscribe(user => {
-            this.userEmail = user?.displayName || user?.username || '';
-            if (!user) {
-                return;
-            }
+            this.userEmail = user.displayName || user.username;
             this.profileService
                 .getUserProfile(user.username)
                 .subscribe(userInfo => {

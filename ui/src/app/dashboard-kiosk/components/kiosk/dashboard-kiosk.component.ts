@@ -48,7 +48,6 @@ import {
 } from '@ngbracket/ngx-layout/flex';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LastUpdatedFormatterService } from '../../../core-services/time-formatting/last-updated-formatter.service';
-import { SpSystemNotificationComponent } from '../../../core/components/system-notification/system-notification.component';
 
 @Component({
     selector: 'sp-dashboard-kiosk',
@@ -63,7 +62,6 @@ import { SpSystemNotificationComponent } from '../../../core/components/system-n
         DashboardGridViewComponent,
         SpLabelComponent,
         TranslatePipe,
-        SpSystemNotificationComponent,
     ],
 })
 export class DashboardKioskComponent implements OnInit, OnDestroy {

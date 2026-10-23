@@ -122,8 +122,7 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http,
-                                         ISpCoreConfigurationStorage coreConfigurationStorage,
-                                         HttpCookieOAuth2AuthorizationRequestRepository authorizationRequestRepository) {
+                                         ISpCoreConfigurationStorage coreConfigurationStorage) {
     http
         .cors(Customizer.withDefaults())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -139,7 +138,7 @@ public class WebSecurityConfig {
       LOG.info("Configuring OAuth authentication from environment variables");
       http.oauth2Login(oauth -> oauth
           .authorizationEndpoint(ae -> ae
-              .authorizationRequestRepository(authorizationRequestRepository)
+              .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
           )
           .redirectionEndpoint(Customizer.withDefaults())
           .userInfoEndpoint(ui -> ui
@@ -178,6 +177,12 @@ public class WebSecurityConfig {
   @Bean
   public RequestAttributeSecurityContextRepository getRequestAttributeSecurityContextRepository() {
     return new RequestAttributeSecurityContextRepository();
+  }
+
+  @Bean
+  @Conditional(OAuthEnabledCondition.class)
+  public HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository() {
+    return new HttpCookieOAuth2AuthorizationRequestRepository();
   }
 
   @Bean

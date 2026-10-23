@@ -82,16 +82,25 @@ public class ProtocolManager {
     return new StandaloneSpOutputCollector<>(protocol, resourceId);
   }
 
-  public static void removeInputCollector(TransportProtocol protocol, StandaloneSpInputCollector<?> expected) {
-    consumers.remove(topicName(protocol), expected);
-  }
-
-  public static void removeOutputCollector(TransportProtocol protocol, StandaloneSpOutputCollector<?> expected) {
-    producers.remove(topicName(protocol), expected);
-  }
-
   private static String topicName(TransportProtocol protocol) {
     return protocol.getTopicDefinition().getActualTopicName();
   }
+
+  public static <T extends TransportProtocol> void removeInputCollector(T protocol) throws
+      SpRuntimeException {
+    consumers.remove(topicName(protocol));
+    LOG.debug("Removing consumer from consumer map (size={}): {}",
+        consumers.size(),
+        topicName(protocol));
+  }
+
+  public static <T extends TransportProtocol> void removeOutputCollector(T protocol) throws
+      SpRuntimeException {
+    producers.remove(topicName(protocol));
+    LOG.debug("Removing producer from producer map (size={}): {}",
+        producers.size(),
+        topicName(protocol));
+  }
+
 
 }

@@ -24,15 +24,6 @@ export interface UserAcknowledgment {
     text: string;
 }
 
-export type SystemNotificationType = 'INFO' | 'WARNING' | 'CRITICAL';
-
-export interface SystemNotificationConfig {
-    enabled: boolean;
-    message: string;
-    type: SystemNotificationType;
-    expiresAtMillis?: number;
-}
-
 export interface GeneralConfigModel {
     hostname: string;
     port: number;
@@ -44,5 +35,4 @@ export interface GeneralConfigModel {
     appName: string;
     linkSettings: LinkSettings;
     userAcknowledgment: UserAcknowledgment;
-    systemNotification: SystemNotificationConfig;
 }
