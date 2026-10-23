@@ -30,6 +30,7 @@ import org.apache.streampipes.extensions.connectors.opcua.OpcUaConnectorsModuleE
 import org.apache.streampipes.extensions.connectors.plc.PlcConnectorsModuleExport;
 import org.apache.streampipes.extensions.connectors.pulsar.PulsarConnectorsModuleExport;
 import org.apache.streampipes.extensions.connectors.rocketmq.RocketMqConnectorsModuleExport;
+import org.apache.streampipes.extensions.connectors.s3.S3ConnectorsModuleExport;
 import org.apache.streampipes.extensions.connectors.tubemq.TubeMQConnectorsModuleExport;
 import org.apache.streampipes.extensions.management.model.SpServiceDefinition;
 import org.apache.streampipes.extensions.management.model.SpServiceDefinitionBuilder;
@@ -77,6 +78,7 @@ public class AllExtensionsIIoTInit extends StreamPipesExtensionsServiceBase {
             new PulsarConnectorsModuleExport(),
             new RocketMqConnectorsModuleExport(),
             new RosConnectorsModuleExport(),
+            new S3ConnectorsModuleExport(),
             new TubeMQConnectorsModuleExport(),
 
             new ChangeDetectionExtensionModuleExport(),

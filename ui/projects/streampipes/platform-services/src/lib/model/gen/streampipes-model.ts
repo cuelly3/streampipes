@@ -17,7 +17,7 @@
  * under the License.
  */
 // @ts-nocheck
-// Generated using typescript-generator version 3.2.1263 on 2026-10-13 16:58:25.
+// Generated using typescript-generator version 3.2.1263 on 2026-09-18 15:38:44.
 
 export class NamedStreamPipesEntity implements Storable {
     '@class':
@@ -1153,7 +1153,6 @@ export class CorrectionValueTransformationRuleDescription extends ValueTransform
 
 export class CreateOptions {
     persist: boolean;
-    persistDatasetName: string;
     start: boolean;
 
     static fromData(
@@ -1165,7 +1164,6 @@ export class CreateOptions {
         }
         const instance = target || new CreateOptions();
         instance.persist = data.persist;
-        instance.persistDatasetName = data.persistDatasetName;
         instance.start = data.start;
         return instance;
     }
@@ -4755,6 +4753,134 @@ export type ValueTransformationRuleDescriptionUnion =
     | UnitTransformRuleDescription
     | CorrectionValueTransformationRuleDescription
     | RegexTransformationRuleDescription;
+
+export class OverviewEntry {
+    createdAt: number;
+    id: string;
+    name: string;
+    owner: string;
+
+    static fromData(
+        data: OverviewEntry,
+        target?: OverviewEntry,
+    ): OverviewEntry {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new OverviewEntry();
+        instance.createdAt = data.createdAt;
+        instance.id = data.id;
+        instance.name = data.name;
+        instance.owner = data.owner;
+        return instance;
+    }
+}
+
+export class AdapterOverviewEntry extends OverviewEntry {
+    adapterType: string;
+    running: boolean;
+    securityMode: string;
+    securityPolicy: string;
+
+    static fromData(
+        data: AdapterOverviewEntry,
+        target?: AdapterOverviewEntry,
+    ): AdapterOverviewEntry {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new AdapterOverviewEntry();
+        super.fromData(data, instance);
+        instance.adapterType = data.adapterType;
+        instance.running = data.running;
+        instance.securityMode = data.securityMode;
+        instance.securityPolicy = data.securityPolicy;
+        return instance;
+    }
+}
+
+export class ChartOverviewEntry extends OverviewEntry {
+    widgetType: string;
+
+    static fromData(
+        data: ChartOverviewEntry,
+        target?: ChartOverviewEntry,
+    ): ChartOverviewEntry {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new ChartOverviewEntry();
+        super.fromData(data, instance);
+        instance.widgetType = data.widgetType;
+        return instance;
+    }
+}
+
+export class DashboardOverviewEntry extends OverviewEntry {
+    widgetCount: number;
+
+    static fromData(
+        data: DashboardOverviewEntry,
+        target?: DashboardOverviewEntry,
+    ): DashboardOverviewEntry {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new DashboardOverviewEntry();
+        super.fromData(data, instance);
+        instance.widgetCount = data.widgetCount;
+        return instance;
+    }
+}
+
+export class PipelineOverviewEntry extends OverviewEntry {
+    running: boolean;
+
+    static fromData(
+        data: PipelineOverviewEntry,
+        target?: PipelineOverviewEntry,
+    ): PipelineOverviewEntry {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new PipelineOverviewEntry();
+        super.fromData(data, instance);
+        instance.running = data.running;
+        return instance;
+    }
+}
+
+export class OverviewExport {
+    adapters: AdapterOverviewEntry[];
+    charts: ChartOverviewEntry[];
+    dashboards: DashboardOverviewEntry[];
+    generatedAt: number;
+    pipelines: PipelineOverviewEntry[];
+
+    static fromData(
+        data: OverviewExport,
+        target?: OverviewExport,
+    ): OverviewExport {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new OverviewExport();
+        instance.adapters = __getCopyArrayFn(AdapterOverviewEntry.fromData)(
+            data.adapters,
+        );
+        instance.charts = __getCopyArrayFn(ChartOverviewEntry.fromData)(
+            data.charts,
+        );
+        instance.dashboards = __getCopyArrayFn(DashboardOverviewEntry.fromData)(
+            data.dashboards,
+        );
+        instance.generatedAt = data.generatedAt;
+        instance.pipelines = __getCopyArrayFn(PipelineOverviewEntry.fromData)(
+            data.pipelines,
+        );
+        return instance;
+    }
+}
 
 function __getCopyArrayFn<T>(itemCopyFn: (item: T) => T): (array: T[]) => T[] {
     return (array: T[]) => __copyArray(array, itemCopyFn);

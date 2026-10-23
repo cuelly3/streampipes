@@ -1,0 +1,45 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+org.apache.streampipes.connectors.s3.object.title=S3 Object Storage
+org.apache.streampipes.connectors.s3.object.description=Reads objects from S3 and S3-compatible object storage such as MinIO or SeaweedFS
+endpoint-url.title=Endpoint URL
+endpoint-url.description=Base URL of the S3 API, for example https://s3.eu-central-1.amazonaws.com or http://minio:9000
+region.title=Region
+region.description=Region the bucket belongs to, for example eu-central-1. S3-compatible stores usually accept us-east-1
+access-key.title=Access key
+access-key.description=Access key ID used to authenticate against the endpoint
+secret-key.title=Secret key
+secret-key.description=Secret access key used to authenticate against the endpoint
+bucket.title=Bucket
+bucket.description=Name of the bucket to read objects from
+object-pattern.title=Object pattern
+object-pattern.description=Glob matched against the object key, for example json/sensors-*.json. The leading literal part is pushed down to the server as a prefix
+after-read.title=After read
+after-read.description=What happens to an object once it has been read. The keep options leave the bucket untouched and remember which objects were processed; move and delete modify the bucket but need no state
+keep-persistent.title=Keep objects (tracked on disk)
+keep-persistent.description=Leaves the bucket untouched and remembers processed objects on disk. Needs a persistent volume to survive a restart
+keep-in-memory.title=Keep objects (tracked in memory)
+keep-in-memory.description=Leaves the bucket untouched, but forgets what it processed when the adapter restarts, so everything is ingested again
+move.title=Move objects to another bucket
+move.description=Copies each object to an archive bucket and removes it from the source bucket. Needs PutObject and DeleteObject permissions
+delete.title=Delete objects
+delete.description=Deletes each object from the bucket after it has been read. Needs DeleteObject permission
+archive-group.title=Archive settings
+archive-group.description=Where moved objects are placed
+archive-bucket.title=Archive bucket
+archive-bucket.description=Bucket that objects are moved to once they have been read
+poll-interval-ms.title=Poll interval (ms)
+poll-interval-ms.description=How often the bucket is listed for new objects

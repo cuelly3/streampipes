@@ -68,7 +68,8 @@ crashlytics-build.properties
 fabric.properties
 
 .DS_Store
-
+# docker file used only for local
+docker-compose.yml
 # Maven
 */log/*
 */target/*

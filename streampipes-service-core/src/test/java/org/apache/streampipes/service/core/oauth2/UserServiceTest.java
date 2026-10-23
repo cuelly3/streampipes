@@ -42,7 +42,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -182,7 +181,7 @@ class UserServiceTest {
   }
 
   @Test
-  void createsEnabledAccountForNewUserWithUnusedEmail() {
+  void createsDisabledAccountForNewUserWithUnusedEmail() {
     addLocalAdmin();
 
     var details = userService.processUserRegistration(PROVIDER, claims("new-user", "new.user@example.org"));
@@ -191,7 +190,7 @@ class UserServiceTest {
     assertEquals("new.user@example.org", created.getUsername());
     assertEquals(PROVIDER, created.getProvider());
     assertEquals("New User", created.getFullName());
-    assertTrue(created.isAccountEnabled());
+    assertFalse(created.isAccountEnabled());
     assertEquals("new.user@example.org", details.getUsername());
     verify(userStorage).storeUser(created);
     verify(userStorage, never()).updateUser(any());
