@@ -18,11 +18,7 @@
 
 package org.apache.streampipes.extensions.connectors.s3.route;
 
-/**
- * Parsing failed part-way through an object, after some events had already been
- * emitted. Carries the count so the failure can be reported honestly rather
- * than as a clean failure.
- */
+
 public class PartialObjectException extends Exception {
 
   private static final long serialVersionUID = 1L;

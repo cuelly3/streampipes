@@ -30,13 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.BiConsumer;
 
-/**
- * Polls a bucket, keeps the objects whose key matches the pattern, drops
- * duplicates, and hands each one to a callback as a stream.
- *
- * <p>Five of the component's defaults are wrong for read-only ingestion and are
- * all overridden below; each {@code false} here is load-bearing, not decoration.
- */
+
 public class S3IngestRoute extends RouteBuilder {
 
   public static final String ROUTE_ID = "streampipes-s3-ingest";

@@ -26,14 +26,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.LongSupplier;
 
-/**
- * Forwards the first occurrence of a fault immediately, then at most one
- * summary per interval while the same fault persists.
- *
- * <p>A polling consumer repeats its failure every poll: a single wrong bucket
- * produced six identical exceptions in three seconds, a bad credential eight in
- * four. Forwarding those as they arrive would bury the adapter log and the UI.
- */
 public class ThrottledErrorReporter implements BiConsumer<String, Exception> {
 
   static final Duration DEFAULT_INTERVAL = Duration.ofMinutes(1);
@@ -91,7 +83,6 @@ public class ThrottledErrorReporter implements BiConsumer<String, Exception> {
         : " (%d further identical failure(s) suppressed)".formatted(suppressed);
 
     if (error instanceof PartialObjectException partial) {
-      // Deliberately not retried: the events it already emitted cannot be unsent.
       logger.warn(
           "S3 object partially ingested",
           ("Parsing '%s' failed after %d event(s) had already been emitted. The object was not "

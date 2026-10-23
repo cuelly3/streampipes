@@ -20,17 +20,9 @@ package org.apache.streampipes.extensions.connectors.s3.route;
 
 import java.io.InputStream;
 
-/**
- * What the route does with each matching object. Keeping this a plain callback
- * is what keeps {@link S3IngestRoute} free of StreamPipes types, so the route
- * stays reusable for other Camel-based connectors.
- */
 @FunctionalInterface
 public interface S3ObjectHandler {
 
-  /**
-   * @param objectKey the S3 key, for logging and error messages
-   * @param body      the object's content; the route closes it afterwards
-   */
   void handle(String objectKey, InputStream body) throws Exception;
+
 }

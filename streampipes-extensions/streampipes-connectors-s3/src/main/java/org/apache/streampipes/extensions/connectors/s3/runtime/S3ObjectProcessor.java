@@ -29,14 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * The single point where the Camel side meets StreamPipes: takes an object's
- * stream, runs the user-selected parser over it, and forwards each event to the
- * collector.
- *
- * <p>{@link IParser#parse} already accepts an {@code InputStream}, so nothing is
- * buffered here.
- */
+
 public class S3ObjectProcessor implements S3ObjectHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(S3ObjectProcessor.class);
@@ -63,9 +56,6 @@ public class S3ObjectProcessor implements S3ObjectHandler {
       objectsProcessed.incrementAndGet();
       LOG.debug("Parsed {} into {} event(s)", objectKey, emittedForObject.get());
     } catch (Exception e) {
-      // A mid-parse failure leaves events already emitted. There is no
-      // transaction spanning the broker and the idempotent repository, so a
-      // retry would duplicate them: report how far it got and move on.
       throw new PartialObjectException(objectKey, emittedForObject.get(), e);
     }
   }

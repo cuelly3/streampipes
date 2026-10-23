@@ -20,16 +20,7 @@ package org.apache.streampipes.extensions.connectors.s3.route;
 
 import org.apache.streampipes.extensions.connectors.s3.client.S3ConnectionSettings;
 
-/**
- * Everything the ingest route needs, as plain values.
- *
- * @param connection    endpoint, credentials and source bucket
- * @param pattern       glob applied to the object key
- * @param afterRead     what to do with an object once it has been read
- * @param archiveBucket destination for {@link AfterReadAction#MOVE}, else null
- * @param pollDelayMs   delay between polls
- * @param maxPerPoll    objects per poll
- */
+
 public record S3IngestSettings(
     S3ConnectionSettings connection,
     ObjectKeyPattern pattern,
