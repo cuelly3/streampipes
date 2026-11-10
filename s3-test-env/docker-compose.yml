@@ -1,0 +1,121 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Local S3-compatible storage for testing the StreamPipes S3 adapter.
+# Development only: throwaway credentials, plain HTTP.
+
+x-s3-credentials: &s3-credentials
+  AWS_ACCESS_KEY_ID: streampipes
+  AWS_SECRET_ACCESS_KEY: streampipes-secret
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_EC2_METADATA_DISABLED: "true"
+
+services:
+  # Official minio/minio images were withdrawn from Docker Hub;
+  # this is Bitnami's archived MinIO 2025.7.23 build.
+  minio:
+    image: bitnamilegacy/minio:2025.7.23-debian-12-r5
+    environment:
+      MINIO_ROOT_USER: streampipes
+      MINIO_ROOT_PASSWORD: streampipes-secret
+      MINIO_DEFAULT_BUCKETS: sp-test
+      MINIO_SCHEME: http
+      MINIO_BROWSER: "on"
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # web console
+    volumes:
+      - minio:/bitnami/minio/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    networks:
+      spnet:
+
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.48
+    # -volume.max is required: left unset, SeaweedFS sizes it from free disk
+    # space, and on a full disk uploads fail with HTTP 500.
+    command: >
+      server -dir=/data -ip=seaweedfs
+      -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
+      -volume.max=100 -master.volumeSizeLimitMB=64
+    ports:
+      - "8333:8333"             # S3 API
+      - "127.0.0.1:8888:8888"   # Filer UI (file browser)
+      - "127.0.0.1:9333:9333"   # Master UI (cluster status)
+    volumes:
+      - ./seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+      - seaweedfs:/data
+    healthcheck:
+      # The S3 root answers 403 to anonymous callers, so probe /healthz.
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8333/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    networks:
+      spnet:
+
+  # Creates the sp-test bucket on both servers and uploads ./samples.
+  seed:
+    image: amazon/aws-cli:2.37.10
+    depends_on:
+      minio:
+        condition: service_healthy
+      seaweedfs:
+        condition: service_healthy
+    environment:
+      <<: *s3-credentials
+      S3_BUCKET: sp-test
+      S3_ENDPOINTS: "minio=http://minio:9000 seaweedfs=http://seaweedfs:8333"
+    entrypoint: ["/bin/bash", "/opt/seed.sh"]
+    volumes:
+      - ./samples:/samples:ro
+      - ./scripts/seed.sh:/opt/seed.sh:ro
+    restart: "no"
+    networks:
+      spnet:
+      
+  # Keeps writing new objects so a running adapter has data to ingest.
+  # Opt-in: start it with --profile producer.
+  producer:
+    image: amazon/aws-cli:2.37.10
+    profiles: ["producer"]
+    depends_on:
+      seaweedfs:
+        condition: service_healthy
+    environment:
+      <<: *s3-credentials
+      S3_ENDPOINT: http://seaweedfs:8333
+      S3_BUCKET: sp-test
+      INTERVAL_SECONDS: "5"
+    entrypoint: ["/bin/bash", "/opt/produce.sh"]
+    volumes:
+      - ./scripts/produce.sh:/opt/produce.sh:ro
+    networks:
+      spnet:
+
+volumes:
+  minio:
+  seaweedfs:
+
+networks:
+  spnet:
+    name: spnet
+    external: true
