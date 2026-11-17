@@ -91,7 +91,7 @@
 
         <rocketmq.version>5.2.0</rocketmq.version>
         <jsrosbridge.version>0.2.0</jsrosbridge.version>
-        <s3.version>2.46.10</s3.version>
+        <s3.version>2.50.2</s3.version>
         <siddhi.version>5.1.27</siddhi.version>
         <simple-java-mail.version>9.3.2</simple-java-mail.version>
         <slack-api.version>1.4.0</slack-api.version>
@@ -239,6 +239,17 @@
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-jackson</artifactId>
                 <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-aws2-s3</artifactId>
+                <version>${camel.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>software.amazon.awssdk</groupId>
+                        <artifactId>netty-nio-client</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>

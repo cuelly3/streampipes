@@ -41,7 +41,6 @@ public class StandaloneSpInputCollector<T extends TransportProtocol> extends
 
   private final Boolean singletonEngine;
   private final EventConsumer consumer;
-  private boolean connectionStarted;
   private final boolean loadManagementEnabled;
 
   public StandaloneSpInputCollector(T protocol,
@@ -113,17 +112,15 @@ public class StandaloneSpInputCollector<T extends TransportProtocol> extends
     if (!consumer.isConnected()) {
       consumer.connect(this);
     }
-    connectionStarted = true;
   }
 
   @Override
   public void disconnect() throws SpRuntimeException {
-    if (consumers.isEmpty()) {
-      if (connectionStarted || consumer.isConnected()) {
+    if (consumer.isConnected()) {
+      if (consumers.isEmpty()) {
         consumer.disconnect();
-        connectionStarted = false;
+        ProtocolManager.removeInputCollector(transportProtocol);
       }
-      ProtocolManager.removeInputCollector(transportProtocol, this);
     }
   }
 }

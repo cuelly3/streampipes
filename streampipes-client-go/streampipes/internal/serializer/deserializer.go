@@ -19,10 +19,9 @@ package serializer
 
 import (
 	"encoding/json"
+	"github.com/apache/streampipes/streampipes-client-go/streampipes/model/adapter"
 	"log"
 	"strings"
-
-	"github.com/apache/streampipes/streampipes-client-go/streampipes/model/adapter"
 
 	"github.com/apache/streampipes/streampipes-client-go/streampipes/model"
 	"github.com/apache/streampipes/streampipes-client-go/streampipes/model/data_lake"

@@ -51,24 +51,19 @@
                             >&nbsp;|&nbsp;{{ dashboard?.description }}</span
                         >
                     }
-                    <div class="toolbar-end">
-                        @if (lastUpdatedAt) {
-                            <sp-label
-                                class="last-updated"
-                                icon="update"
-                                tone="info"
-                                size="small"
-                                variant="soft"
-                                shape="rounded"
-                            >
-                                {{ 'Last updated' | translate }}:
-                                {{ formatLastUpdatedAt() }}
-                            </sp-label>
-                        }
-                        <sp-system-notification
-                            class="system-notification"
-                        ></sp-system-notification>
-                    </div>
+                    @if (lastUpdatedAt) {
+                        <sp-label
+                            class="last-updated"
+                            icon="update"
+                            tone="info"
+                            size="small"
+                            variant="soft"
+                            shape="rounded"
+                        >
+                            {{ 'Last updated' | translate }}:
+                            {{ formatLastUpdatedAt() }}
+                        </sp-label>
+                    }
                 </div>
             </div>
         </div>

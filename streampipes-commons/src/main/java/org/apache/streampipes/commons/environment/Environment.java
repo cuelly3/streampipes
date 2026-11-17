@@ -17,7 +17,6 @@
  */
 package org.apache.streampipes.commons.environment;
 
-import org.apache.streampipes.commons.constants.Envs;
 import org.apache.streampipes.commons.environment.model.OAuthConfiguration;
 import org.apache.streampipes.commons.environment.variable.BooleanEnvironmentVariable;
 import org.apache.streampipes.commons.environment.variable.DoubleEnvironmentVariable;
@@ -143,10 +142,6 @@ public interface Environment {
   IntEnvironmentVariable getLogFetchIntervalInMillis();
 
   IntEnvironmentVariable getUnhealthyTimeBeforeServiceDeletionInMillis();
-
-  default IntEnvironmentVariable getServiceHealthFailureThreshold() {
-    return new IntEnvironmentVariable(Envs.SP_HEALTH_SERVICE_FAILURE_THRESHOLD);
-  }
 
   IntEnvironmentVariable getInitialWaitTimeBeforeInstallationInMillis();
 

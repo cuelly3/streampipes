@@ -18,7 +18,6 @@
 package org.apache.streampipes.user.management.util;
 
 import org.apache.streampipes.model.client.user.Principal;
-import org.apache.streampipes.model.client.user.UserAccount;
 
 public final class PrincipalStatus {
 
@@ -26,13 +25,6 @@ public final class PrincipalStatus {
   }
 
   public static boolean canAuthenticate(Principal principal) {
-    // External providers own account status. Legacy OAuth accounts were stored as disabled.
-    // This check only determines eligibility; callers must still validate the credentials.
-    if (principal instanceof UserAccount user
-        && user.getProvider() != null && !user.getProvider().isBlank()
-        && !UserAccount.LOCAL.equals(user.getProvider())) {
-      return true;
-    }
     return principal != null && principal.isAccountEnabled()
         && !principal.isAccountLocked() && !principal.isAccountExpired();
   }

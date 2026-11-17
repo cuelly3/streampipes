@@ -20,11 +20,10 @@ package streampipes
 import (
 	"bytes"
 	"fmt"
-	"io"
-	"net/http"
-
 	"github.com/apache/streampipes/streampipes-client-go/streampipes/config"
 	headers "github.com/apache/streampipes/streampipes-client-go/streampipes/internal/http_headers"
+	"io"
+	"net/http"
 )
 
 type endpoint struct {
@@ -75,7 +74,7 @@ func (e *endpoint) handleStatusCode(resp *http.Response) error {
 	case http.StatusInternalServerError:
 		return fmt.Errorf("response code %d:"+"streamPipes internal error", resp.StatusCode)
 	default:
-		return fmt.Errorf("%s", resp.Status)
+		return fmt.Errorf(resp.Status)
 	}
 
 }

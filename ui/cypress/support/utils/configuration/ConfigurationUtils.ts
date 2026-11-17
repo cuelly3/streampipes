@@ -16,8 +16,6 @@
  *
  */
 
-import { ConfigurationBtns } from './ConfigurationBtns';
-
 export class ConfigurationUtils {
     public static goToConfigurationExport() {
         cy.visit('#/configuration/export');
@@ -62,20 +60,5 @@ export class ConfigurationUtils {
         cy.dataCy('confirm-delete').should('be.visible').click();
         cy.contains('[data-cy="label-text"]', labelName).should('not.exist');
         cy.dataCy('no-table-entries').should('be.visible');
-    }
-
-    public static enableSystemNotification(message: string) {
-        ConfigurationUtils.goToGeneralConfiguration();
-        ConfigurationBtns.systemNotificationEnabledCheckbox().check();
-        ConfigurationBtns.systemNotificationMessageInput()
-            .clear()
-            .type(message);
-        ConfigurationBtns.generalConfigSaveBtn().click();
-    }
-
-    public static disableSystemNotification() {
-        ConfigurationUtils.goToGeneralConfiguration();
-        ConfigurationBtns.systemNotificationEnabledCheckbox().uncheck();
-        ConfigurationBtns.generalConfigSaveBtn().click();
     }
 }

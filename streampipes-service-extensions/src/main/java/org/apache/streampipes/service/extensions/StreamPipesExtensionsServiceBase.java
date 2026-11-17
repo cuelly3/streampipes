@@ -81,7 +81,7 @@ public abstract class StreamPipesExtensionsServiceBase extends StreamPipesServic
   private ExtensionBrokerRequestReceiver extensionBrokerRequestReceiver;
   private ExtensionServiceTransportMode extensionTransportMode = ExtensionServiceTransportMode.HTTP;
   private boolean natsBrokerReceiverActive = false;
-  private volatile SpServiceRegistration currentServiceRegistration;
+  private SpServiceRegistration currentServiceRegistration;
 
   public void init() {
     SpServiceDefinition serviceDef = provideServiceDefinition();
@@ -116,7 +116,11 @@ public abstract class StreamPipesExtensionsServiceBase extends StreamPipesServic
 
   public void afterServiceRegistered(SpServiceDefinition serviceDef,
                                      SpServiceRegistration serviceReg) {
-    registerMigrations(serviceDef, serviceReg);
+    StreamPipesClient client = new StreamPipesClientResolver().makeStreamPipesClientInstance();
+
+    // register all migrations at StreamPipes Core
+    var migrationConfigs = serviceDef.getMigrators().stream().map(IModelMigrator::config).toList();
+    new CoreRequestSubmitter().submitMigrationRequest(client, migrationConfigs, serviceId(), serviceReg);
 
     // initialize all function instances
     StreamPipesFunctionHandler.INSTANCE.initializeFunctions(serviceDef.getServiceGroup());
@@ -139,7 +143,7 @@ public abstract class StreamPipesExtensionsServiceBase extends StreamPipesServic
           Environments.getEnvironment()
               .getExtensionRequestTopicPrefix()
               .getValueOrReturn(ExtensionServiceBrokerTopics.DEFAULT_REQUEST_TOPIC_PREFIX),
-          () -> onNatsReconnect(serviceDef)
+          this::onNatsReconnect
       );
     } else {
       LOG.info("Starting Extension Service on HTTP Mode");
@@ -177,7 +181,7 @@ public abstract class StreamPipesExtensionsServiceBase extends StreamPipesServic
     new CoreRequestSubmitter().submitRegistrationRequest(client, serviceRegistration);
   }
 
-  private void onNatsReconnect(SpServiceDefinition serviceDef) {
+  private void onNatsReconnect() {
     var registration = this.currentServiceRegistration;
     if (registration == null) {
       LOG.warn("NATS reconnect detected but service registration is not available yet");
@@ -186,23 +190,10 @@ public abstract class StreamPipesExtensionsServiceBase extends StreamPipesServic
 
     try {
       LOG.info("NATS reconnect detected - refreshing service registration for {}", registration.getSvcId());
-      refreshServiceRegistration(serviceDef, registration);
+      registerService(registration);
     } catch (Exception e) {
       LOG.warn("Could not refresh service registration after NATS reconnect", e);
     }
-  }
-
-  void refreshServiceRegistration(SpServiceDefinition serviceDef, SpServiceRegistration registration) {
-    registerService(registration);
-    // Registration resets readiness. Complete the migration handshake again, but
-    // do not initialize function instances that are already running.
-    registerMigrations(serviceDef, registration);
-  }
-
-  private void registerMigrations(SpServiceDefinition serviceDef, SpServiceRegistration registration) {
-    var client = new StreamPipesClientResolver().makeStreamPipesClientInstance();
-    var migrationConfigs = serviceDef.getMigrators().stream().map(IModelMigrator::config).toList();
-    new CoreRequestSubmitter().submitMigrationRequest(client, migrationConfigs, registration.getSvcId(), registration);
   }
 
   protected Set<SpServiceTag> getServiceTags(Set<ExtensionItemDescription> extensions) {

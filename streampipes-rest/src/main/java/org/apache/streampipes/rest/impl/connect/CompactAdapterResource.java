@@ -164,7 +164,7 @@ public class CompactAdapterResource extends AbstractAdapterResource<AdapterMaste
               ),
               pipelineManager,
               getAuthenticatedUserSid()
-          ).createAndStartPersistPipeline(storedAdapter, requestManager, compactAdapter.createOptions().persistDatasetName());
+          ).createAndStartPersistPipeline(storedAdapter, requestManager);
         }
         if (compactAdapter.createOptions()
                           .start()) {
